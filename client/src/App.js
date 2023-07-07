@@ -38,20 +38,24 @@ export default function Checkout() {
   const [leaveBalance, setLeaveBalance] = React.useState(22);
   const [list, setList] = React.useState([]);
   const [selectedItem, setSelectedItem] = React.useState(null);
+  const [errors, setErrors] = React.useState({});
 
   const handleOpen = (e) => {
     setAddRecord(true)
     setSelectedItem(null)
+    setErrors({});
   }
 
   const handleClose = () => {
     setAddRecord(false)
     setSelectedItem(null)
+    setErrors({});
   }
 
 
   const handleSelect = (e, type) => {
     setSelectedItem(e)
+    setErrors({})
     if (type === 'edit') {
       setAddRecord(true);
     }
@@ -115,11 +119,13 @@ export default function Checkout() {
 
 
   const handleSubmit = (employeeName, startDate, endDate, leaveType) => {
-
+    setErrors({})
     const leaveDuration = calculateLeaveDuration(startDate, endDate, leaveType);
     const updatedLeaveBalance = leaveBalance - leaveDuration;
     console.log('DURATION', leaveDuration)
+    if (updatedLeaveBalance < 0) return setErrors({ leaveBalance: "Not Enough Leave Credits!" })
     setLeaveBalance(updatedLeaveBalance);
+
     if (selectedItem && leaveDuration !== 0) {
       axios.put(`${commonData.apiUrl}/api/leaves/${selectedItem._id}`, { employeeName, startDate, endDate, leaveType, duration: leaveDuration })
         .then(({ data }) => {
@@ -188,7 +194,7 @@ export default function Checkout() {
           >
 
             <img src={CalendarIcon} height={30} width={30} />
-            <Typography variant='caption'>View Calendar</Typography>
+            <Typography variant='caption' style={{ fontWeight: 'bold' }} color="primary">View Calendar</Typography>
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -198,7 +204,7 @@ export default function Checkout() {
             style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5 }}
           >
             <Typography variant='body2' style={{ lineHeight: 1 }} >LEAVE CREDITS: {leaveBalance + 2}</Typography>
-            <Typography variant='caption' style={{ lineHeight: 1 }} >(pro-rated): {leaveBalance}</Typography>
+            <Typography variant='caption' style={{ lineHeight: 1 }} color={errors && errors.leaveBalance ? "error" : "primary"}>(pro-rated): {leaveBalance}  {errors.leaveBalance && errors.leaveBalance}</Typography>
           </div>
           {!addRecord || (addRecord && selectedItem) ?
             <ApplyButton
