@@ -9,13 +9,17 @@ This is a server API for a leave application form that integrates with Google Ca
 - MongoDB database set up and running.
 - Google API credentials JSON file for the Google Calendar integration. Please follow the instructions below to obtain the credentials file.
 
+## LIVE DEMO
+
+- [Leave Application Form](https://leaveform.bugtech.solutions/)   
+
 ## Setup Instructions
 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd leave-application-server
+   git clone [<repository-url>](https://github.com/jGeli/leave-application.git)
+   cd leave-application 
    ```
 
 2. Install the dependencies:
